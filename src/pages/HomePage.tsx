@@ -1,6 +1,7 @@
 import { Rocket, DollarSign, Users, Target, Shield, TrendingUp, BarChart3, Zap } from 'lucide-react';
 import Header from '../components/Header';
 import ChatBot from '../components/ChatBot';
+import Footer from '../components/Footer';
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
@@ -86,7 +87,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
         <section className="max-w-7xl mx-auto px-6 py-20">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose VentureHub?
+              Why Choose UpFund?
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               Advanced AI technology meets traditional investment wisdom to create the
@@ -138,6 +139,7 @@ export default function HomePage({ onNavigate }: HomePageProps) {
           </div>
         </section>
       </main>
+      <Footer />
       <ChatBot />
     </div>
   );

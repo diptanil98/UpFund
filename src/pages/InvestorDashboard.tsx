@@ -1,5 +1,6 @@
 import { TrendingUp, Search, MessageSquare, Briefcase, Settings, LogOut } from 'lucide-react';
 import ChatBot from '../components/ChatBot';
+import Footer from '../components/Footer';
 
 interface InvestorDashboardProps {
   onNavigate: (page: string) => void;
@@ -233,6 +234,7 @@ export default function InvestorDashboard({ onNavigate, onLogout }: InvestorDash
           </div>
         </main>
       </div>
+      <Footer />
       <ChatBot />
     </div>
   );
