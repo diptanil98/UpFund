@@ -2,6 +2,7 @@ import { Search, Filter, DollarSign, Users, Calendar, TrendingUp, ArrowRight, Ar
 import { useState } from 'react';
 import Header from '../components/Header';
 import ChatBot from '../components/ChatBot';
+import Footer from '../components/Footer';
 
 interface StartupBrowsePageProps {
   onNavigate: (page: string) => void;
@@ -207,6 +208,7 @@ export default function StartupBrowsePage({ onNavigate, isLoggedIn, userRole }: 
           ))}
         </div>
       </main>
+      <Footer />
       <ChatBot />
     </div>
   );

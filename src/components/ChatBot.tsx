@@ -58,7 +58,7 @@ export default function ChatBot() {
       let response = '';
       if (action.includes('crowdfunding')) {
         response =
-          'Crowdfunding is a way to raise money from a large number of people, typically via the internet. On VentureHub, startups can showcase their projects and receive investments from interested investors.';
+          'Crowdfunding is a way to raise money from a large number of people, typically via the internet. On UpFund, startups can showcase their projects and receive investments from interested investors.';
       } else if (action.includes('invest')) {
         response =
           'To start investing, create an investor account, browse through available startups, review their profiles, and choose projects that align with your investment goals. You can start with as little as you want!';
@@ -96,7 +96,7 @@ export default function ChatBot() {
                 <MessageCircle className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-white font-semibold">VentureHub AI Assistant</h3>
+                <h3 className="text-white font-semibold">UpFund AI Assistant</h3>
                 <p className="text-xs text-slate-400">
                   Ask me anything about startups, investments, or how our platform works
                 </p>

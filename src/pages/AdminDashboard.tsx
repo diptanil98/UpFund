@@ -1,5 +1,6 @@
 import { LayoutDashboard, FileText, Users, BarChart3, Settings, LogOut } from 'lucide-react';
 import ChatBot from '../components/ChatBot';
+import Footer from '../components/Footer';
 
 interface AdminDashboardProps {
   onNavigate: (page: string) => void;
@@ -195,6 +196,7 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
           </div>
         </main>
       </div>
+      <Footer />
       <ChatBot />
     </div>
   );
