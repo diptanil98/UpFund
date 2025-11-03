@@ -28,3 +28,4 @@ uvicorn app.main:app --reload --port 8000
 
 ## API
 - POST `/api/auth/signup` → Create user account
+
