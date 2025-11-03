@@ -20,4 +20,9 @@ app.add_middleware(
 async def health():
     return {"status": "ok"}
 
+@app.get("/")
+async def root():
+    return {"message": "UpFund API is running", "docs": "/docs"}
+
 app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
+

@@ -10,3 +10,4 @@ async def get_db() -> AsyncIOMotorDatabase:
         _client = AsyncIOMotorClient(settings.MONGODB_URI)
         _db = _client[settings.DB_NAME]
     return _db
+
