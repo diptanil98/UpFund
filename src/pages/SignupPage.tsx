@@ -5,7 +5,10 @@ import ChatBot from '../components/ChatBot';
 
 interface SignupPageProps {
   onNavigate: (page: string) => void;
-  onLogin: (role: 'investor' | 'entrepreneur' | 'admin') => void;
+  onLogin: (
+    role: 'investor' | 'entrepreneur' | 'admin',
+    userData: { name: string; email: string }
+  ) => void;
 }
 
 export default function SignupPage({ onNavigate, onLogin }: SignupPageProps) {
@@ -27,7 +30,11 @@ export default function SignupPage({ onNavigate, onLogin }: SignupPageProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedRole && formData.email && formData.password) {
-      onLogin(selectedRole as 'investor' | 'entrepreneur' | 'admin');
+      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
+      onLogin(selectedRole as 'investor' | 'entrepreneur' | 'admin', {
+        name: fullName || formData.email,
+        email: formData.email,
+      });
     }
   };
 

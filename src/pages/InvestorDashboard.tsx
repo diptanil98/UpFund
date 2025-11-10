@@ -1,12 +1,20 @@
-import { TrendingUp, Search, MessageSquare, Briefcase, Settings, LogOut } from 'lucide-react';
+import { TrendingUp, Search, MessageSquare, Briefcase, Settings, LogOut, Home } from 'lucide-react';
 import ChatBot from '../components/ChatBot';
 
 interface InvestorDashboardProps {
   onNavigate: (page: string) => void;
   onLogout: () => void;
+  userProfile: {
+    name: string;
+    email: string;
+  };
 }
 
-export default function InvestorDashboard({ onNavigate, onLogout }: InvestorDashboardProps) {
+export default function InvestorDashboard({
+  onNavigate,
+  onLogout,
+  userProfile,
+}: InvestorDashboardProps) {
   const portfolioData = [
     { month: 'Jan', value: 120 },
     { month: 'Feb', value: 140 },
@@ -56,21 +64,37 @@ export default function InvestorDashboard({ onNavigate, onLogout }: InvestorDash
 
   const maxValue = Math.max(...portfolioData.map((d) => d.value));
 
+  // Get initials from name
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((word) => word[0])
+      .join('')
+      .toUpperCase();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
       <div className="flex">
         <aside className="w-64 bg-slate-800 min-h-screen p-6 border-r border-slate-700">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-10 h-10 bg-blue-600 rounded-full overflow-hidden flex items-center justify-center">
-              <span className="text-white font-semibold">SC</span>
+              <span className="text-white font-semibold">{getInitials(userProfile.name)}</span>
             </div>
-            <span className="text-white font-semibold">Sophie Carter</span>
+            <span className="text-white font-semibold">{userProfile.name}</span>
           </div>
 
           <nav className="space-y-2">
             <button className="w-full flex items-center gap-3 px-4 py-3 bg-blue-600 text-white rounded-lg font-medium">
               <TrendingUp className="w-5 h-5" />
               Dashboard
+            </button>
+            <button
+              onClick={() => onNavigate('home')}
+              className="w-full flex items-center gap-3 px-4 py-3 text-slate-300 hover:bg-slate-700 rounded-lg font-medium transition-colors"
+            >
+              <Home className="w-5 h-5" />
+              Home
             </button>
             <button
               onClick={() => onNavigate('startups')}
@@ -190,21 +214,11 @@ export default function InvestorDashboard({ onNavigate, onLogout }: InvestorDash
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-slate-700">
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium text-sm">
-                      Date
-                    </th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium text-sm">
-                      Investment
-                    </th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium text-sm">
-                      Company
-                    </th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium text-sm">
-                      Amount
-                    </th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium text-sm">
-                      Status
-                    </th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium text-sm">Date</th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium text-sm">Investment</th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium text-sm">Company</th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium text-sm">Amount</th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium text-sm">Status</th>
                   </tr>
                 </thead>
                 <tbody>

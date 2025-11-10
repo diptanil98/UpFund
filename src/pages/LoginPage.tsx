@@ -1,23 +1,28 @@
 import { useState } from 'react';
-import { TrendingUp, Mail, Lock } from 'lucide-react';
+import { TrendingUp, Mail, Lock, User } from 'lucide-react'; // Add User icon
 import Header from '../components/Header';
 import ChatBot from '../components/ChatBot';
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
-  onLogin: (role: 'investor' | 'entrepreneur' | 'admin') => void;
+  onLogin: (role: 'investor' | 'entrepreneur' | 'admin', userData: { name: string, email: string }) => void;
 }
 
 export default function LoginPage({ onNavigate, onLogin }: LoginPageProps) {
   const [formData, setFormData] = useState({
+    name: '',
     email: '',
     password: '',
+    role: 'investor' as 'investor' | 'entrepreneur' | 'admin',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.email && formData.password) {
-      onLogin('investor');
+    if (formData.email && formData.password && formData.name) {
+      onLogin(formData.role, { 
+        name: formData.name, 
+        email: formData.email 
+      });
     }
   };
 
@@ -39,6 +44,44 @@ export default function LoginPage({ onNavigate, onLogin }: LoginPageProps) {
             <h2 className="text-xl font-bold text-gray-900 mb-6">Sign In</h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Enter your full name"
+                    className="w-full pl-12 pr-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Role
+                </label>
+                <div className="relative">
+                  <select
+                    value={formData.role}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        role: e.target.value as 'investor' | 'entrepreneur' | 'admin',
+                      })
+                    }
+                    className="w-full pl-4 pr-10 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none"
+                  >
+                    <option value="investor">Investor</option>
+                    <option value="entrepreneur">Entrepreneur</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Email Address

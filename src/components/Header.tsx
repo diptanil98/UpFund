@@ -4,9 +4,10 @@ import { useState } from 'react';
 interface HeaderProps {
   onNavigate: (page: string) => void;
   isLoggedIn?: boolean;
+  showMarketAnalysis?: boolean;
 }
 
-export default function Header({ onNavigate, isLoggedIn }: HeaderProps) {
+export default function Header({ onNavigate, isLoggedIn, showMarketAnalysis = true }: HeaderProps) {
   const [isDark, setIsDark] = useState(false);
 
   return (
@@ -31,13 +32,15 @@ export default function Header({ onNavigate, isLoggedIn }: HeaderProps) {
               <span className="text-sm">📊</span>
               <span className="text-sm font-medium">Startups</span>
             </button>
-            <button
-              onClick={() => onNavigate('startups')}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <span className="text-sm">📈</span>
-              <span className="text-sm font-medium">Market Analysis</span>
-            </button>
+            {showMarketAnalysis && (
+              <button
+                onClick={() => onNavigate('market-analysis')}
+                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                <span className="text-sm">📈</span>
+                <span className="text-sm font-medium">Market Analysis</span>
+              </button>
+            )}
 
             <button
               onClick={() => setIsDark(!isDark)}

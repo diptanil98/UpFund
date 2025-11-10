@@ -1,201 +1,372 @@
-import { LayoutDashboard, FileText, Users, BarChart3, Settings, LogOut } from 'lucide-react';
-import ChatBot from '../components/ChatBot';
+import { useState } from 'react';
+import { Settings, User, Calendar, Clock, Search, Eye, BarChart3 } from 'lucide-react';
+import { Line } from '../components/Charts';
 
 interface AdminDashboardProps {
   onNavigate: (page: string) => void;
   onLogout: () => void;
 }
 
+// Sample data for entrepreneurs
+const entrepreneurs = [
+  {
+    name: 'Olivia Chen',
+    company: 'The innovator\'s Backpack',
+    registrationDate: '2023-10-25',
+    avatar: 'OC'
+  },
+  {
+    name: 'Benjamin Carter',
+    company: 'Eco-Friendly Drone',
+    registrationDate: '2023-10-24',
+    avatar: 'BC'
+  },
+  {
+    name: 'Sophia Rodriguez',
+    company: 'Smart Garden System',
+    registrationDate: '2023-10-23',
+    avatar: 'SR'
+  },
+  {
+    name: 'Ethan Martinez',
+    company: 'AI Health Monitor',
+    registrationDate: '2023-10-22',
+    avatar: 'EM'
+  },
+  {
+    name: 'Ava Thompson',
+    company: 'Solar Power Bank',
+    registrationDate: '2023-10-21',
+    avatar: 'AT'
+  },
+];
+
+// Sample data for investors
+const investors = [
+  {
+    name: 'Liam Goldberg',
+    joined: 'Joined 2 days ago',
+    registrationDate: '2023-10-24',
+    avatar: 'LG'
+  },
+  {
+    name: 'Ava Nguyen',
+    joined: 'Joined 3 days ago',
+    registrationDate: '2023-10-23',
+    avatar: 'AN'
+  },
+  {
+    name: 'Mason Williams',
+    joined: 'Joined 5 days ago',
+    registrationDate: '2023-10-21',
+    avatar: 'MW'
+  },
+  {
+    name: 'Isabella Brown',
+    joined: 'Joined 1 week ago',
+    registrationDate: '2023-10-18',
+    avatar: 'IB'
+  },
+  {
+    name: 'Noah Davis',
+    joined: 'Joined 1 week ago',
+    registrationDate: '2023-10-17',
+    avatar: 'ND'
+  },
+];
+
+// Chart data for user growth
+const getChartData = (timeframe: string) => {
+  if (timeframe === 'Weekly') {
+    return {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      entrepreneurs: [12, 15, 18, 22, 25, 28, 32],
+      investors: [8, 10, 12, 15, 18, 20, 23],
+    };
+  } else if (timeframe === 'Yearly') {
+    return {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      entrepreneurs: [45, 52, 60, 68, 75, 82, 90, 98, 105, 112, 120, 128],
+      investors: [30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85],
+    };
+  } else {
+    // Monthly (default)
+    return {
+      labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+      entrepreneurs: [25, 35, 45, 55],
+      investors: [18, 25, 32, 40],
+    };
+  }
+};
+
+const axisDark = {
+  x: { 
+    grid: { color: 'rgba(255,255,255,0.06)' }, 
+    ticks: { color: 'rgba(255,255,255,0.7)' } 
+  },
+  y: { 
+    grid: { color: 'rgba(255,255,255,0.06)' }, 
+    ticks: { color: 'rgba(255,255,255,0.7)' } 
+  },
+};
+
 export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
-  const applications = [
-    {
-      company: 'Tech Innovators Inc.',
-      founder: 'Ethan Harper',
-      industry: 'Technology',
-      status: 'Pending',
-      submitted: '2023-09-15',
+  const [timeframe, setTimeframe] = useState<'Weekly' | 'Monthly' | 'Yearly'>('Monthly');
+  const chartData = getChartData(timeframe);
+
+  const growthChartData = {
+    labels: chartData.labels,
+    datasets: [
+      {
+        label: 'Entrepreneurs',
+        data: chartData.entrepreneurs,
+        borderColor: 'rgb(59, 130, 246)', // blue
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      },
+      {
+        label: 'Investors',
+        data: chartData.investors,
+        borderColor: 'rgb(34, 197, 94)', // green
+        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom' as const,
+        labels: {
+          color: 'rgba(255,255,255,0.7)',
+          padding: 15,
+          usePointStyle: true,
+          font: {
+            size: 12,
+          },
+        },
+      },
+      tooltip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        titleColor: 'rgba(255,255,255,0.9)',
+        bodyColor: 'rgba(255,255,255,0.7)',
+        borderColor: 'rgba(255,255,255,0.1)',
+        borderWidth: 1,
+      },
     },
-    {
-      company: 'Green Solutions Ltd.',
-      founder: 'Olivia Bennett',
-      industry: 'Sustainability',
-      status: 'Pending',
-      submitted: '2023-09-18',
-    },
-    {
-      company: 'Creative Media Studio',
-      founder: 'Ryan Carter',
-      industry: 'Arts & Culture',
-      status: 'Pending',
-      submitted: '2023-09-20',
-    },
-    {
-      company: 'HealthTech Dynamics',
-      founder: 'Sophia Davis',
-      industry: 'Healthcare',
-      status: 'Pending',
-      submitted: '2023-09-22',
-    },
-    {
-      company: 'EduFuture Systems',
-      founder: 'Liam Evans',
-      industry: 'Education',
-      status: 'Pending',
-      submitted: '2023-09-25',
-    },
-  ];
+    scales: axisDark,
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="flex">
-        <aside className="w-64 bg-white min-h-screen p-6 border-r border-gray-200">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-              <span className="text-white font-semibold text-sm">IN</span>
+    <div className="min-h-screen bg-gray-900">
+      {/* Header */}
+      <header className="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <BarChart3 className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold text-white">Crowdfund Analytics</span>
             </div>
+
+            <nav className="flex items-center gap-6">
+              <button
+                onClick={() => onNavigate('home')}
+                className="text-sm font-medium text-gray-400 hover:text-white transition-colors"
+              >
+                Dashboard
+              </button>
+              <button
+                className="text-sm font-medium text-gray-400 hover:text-white transition-colors"
+              >
+                Campaigns
+              </button>
+              <button
+                className="text-sm font-medium text-white hover:text-blue-400 transition-colors"
+              >
+                Analytics
+              </button>
+              <button 
+                className="p-2 text-gray-400 hover:text-white transition-colors"
+                title="Settings"
+              >
+                <Settings className="w-5 h-5" />
+              </button>
+              <button 
+                onClick={onLogout}
+                className="p-2 text-gray-400 hover:text-white transition-colors"
+                title="User Profile"
+              >
+                <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                  <User className="w-4 h-4 text-white" />
+                </div>
+              </button>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* User Growth Analytics Section */}
+        <div className="bg-gray-800 rounded-2xl p-8 mb-8 border border-gray-700">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <div className="font-semibold text-gray-900">Innovest</div>
+              <h2 className="text-2xl font-bold text-white mb-2">User Growth Analytics</h2>
+              <p className="text-gray-400">Track registration trends for entrepreneurs and investors.</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setTimeframe('Weekly')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  timeframe === 'Weekly'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                Weekly
+              </button>
+              <button
+                onClick={() => setTimeframe('Monthly')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  timeframe === 'Monthly'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setTimeframe('Yearly')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  timeframe === 'Yearly'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                Yearly
+              </button>
             </div>
           </div>
 
-          <nav className="space-y-2">
-            <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-              <LayoutDashboard className="w-5 h-5" />
-              Dashboard
-            </button>
-            <button className="w-full flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-600 rounded-lg font-medium">
-              <FileText className="w-5 h-5" />
-              Applications
-            </button>
-            <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-              <Users className="w-5 h-5" />
-              Investors
-            </button>
-            <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-              <BarChart3 className="w-5 h-5" />
-              Campaigns
-            </button>
-          </nav>
+          <div className="h-80">
+            <Line data={growthChartData} options={chartOptions} />
+          </div>
+        </div>
 
-          <div className="absolute bottom-6">
-            <button className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors mb-2">
-              <Settings className="w-5 h-5" />
-              Settings
+        {/* User Monitoring Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-2">User Monitoring</h2>
+          <p className="text-gray-400 mb-6">Track and analyze user activity on the platform.</p>
+
+          {/* Filter Controls */}
+          <div className="flex gap-4 mb-6">
+            <button className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors border border-gray-700">
+              <Calendar className="w-4 h-4" />
+              <span className="text-sm font-medium">Registration Date</span>
             </button>
-            <button
-              onClick={onLogout}
-              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors"
-            >
-              <LogOut className="w-5 h-5" />
-              Logout
+            <button className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors border border-gray-700">
+              <Clock className="w-4 h-4" />
+              <span className="text-sm font-medium">Last Active Date</span>
+            </button>
+            <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              <Search className="w-4 h-4" />
+              <span className="text-sm font-medium">Search Users</span>
             </button>
           </div>
-        </aside>
 
-        <main className="flex-1 p-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Applications</h1>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-gray-600">John Doe</span>
-            </div>
-          </div>
+          {/* Two Panels */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Entrepreneurs Panel */}
+            <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+              <h3 className="text-xl font-bold text-white mb-1">Entrepreneurs</h3>
+              <p className="text-sm text-gray-400 mb-6">Recently registered entrepreneurs</p>
 
-          <div className="bg-white rounded-xl border border-gray-200 mb-6">
-            <div className="border-b border-gray-200">
-              <div className="flex">
-                <button className="px-6 py-4 text-sm font-semibold text-gray-900 border-b-2 border-blue-600">
-                  All <span className="text-gray-500">(28)</span>
-                </button>
-                <button className="px-6 py-4 text-sm font-medium text-blue-600 hover:text-blue-700">
-                  Pending <span className="text-gray-500">(5)</span>
-                </button>
-                <button className="px-6 py-4 text-sm font-medium text-gray-600 hover:text-gray-900">
-                  Verified <span className="text-gray-500">(91)</span>
-                </button>
+              <div className="space-y-4">
+                <div className="grid grid-cols-12 gap-4 pb-2 border-b border-gray-700 text-xs font-semibold text-gray-400 uppercase">
+                  <div className="col-span-5">Name</div>
+                  <div className="col-span-4">Registration Date</div>
+                  <div className="col-span-3 text-right">Actions</div>
+                </div>
+
+                {entrepreneurs.map((entrepreneur, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-12 gap-4 items-center py-3 border-b border-gray-700/50 last:border-0"
+                  >
+                    <div className="col-span-5 flex items-center gap-3">
+                      <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                        {entrepreneur.avatar}
+                      </div>
+                      <div>
+                        <div className="text-white font-medium text-sm">{entrepreneur.name}</div>
+                        <div className="text-gray-400 text-xs">{entrepreneur.company}</div>
+                      </div>
+                    </div>
+                    <div className="col-span-4 text-gray-300 text-sm">
+                      {entrepreneur.registrationDate}
+                    </div>
+                    <div className="col-span-3 flex justify-end">
+                      <button className="p-2 text-gray-400 hover:text-blue-400 transition-colors">
+                        <Eye className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="p-6">
-              <div className="relative mb-6">
-                <input
-                  type="text"
-                  placeholder="Search by company, founder, or industry..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                />
-              </div>
+            {/* Investors Panel */}
+            <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
+              <h3 className="text-xl font-bold text-white mb-1">Investors</h3>
+              <p className="text-sm text-gray-400 mb-6">Recently registered investors</p>
 
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="text-left py-4 px-4 text-gray-600 font-semibold text-sm">
-                        COMPANY
-                      </th>
-                      <th className="text-left py-4 px-4 text-gray-600 font-semibold text-sm">
-                        FOUNDER
-                      </th>
-                      <th className="text-left py-4 px-4 text-gray-600 font-semibold text-sm">
-                        INDUSTRY
-                      </th>
-                      <th className="text-left py-4 px-4 text-gray-600 font-semibold text-sm">
-                        STATUS
-                      </th>
-                      <th className="text-left py-4 px-4 text-gray-600 font-semibold text-sm">
-                        SUBMITTED
-                      </th>
-                      <th className="text-left py-4 px-4 text-gray-600 font-semibold text-sm">
-                        ACTION
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {applications.map((app, index) => (
-                      <tr
-                        key={index}
-                        className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
-                      >
-                        <td className="py-4 px-4 text-gray-900 font-medium">{app.company}</td>
-                        <td className="py-4 px-4 text-gray-700">{app.founder}</td>
-                        <td className="py-4 px-4">
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                              app.industry === 'Technology'
-                                ? 'bg-blue-100 text-blue-700'
-                                : app.industry === 'Sustainability'
-                                ? 'bg-green-100 text-green-700'
-                                : app.industry === 'Healthcare'
-                                ? 'bg-red-100 text-red-700'
-                                : app.industry === 'Education'
-                                ? 'bg-violet-100 text-violet-700'
-                                : 'bg-orange-100 text-orange-700'
-                            }`}
-                          >
-                            {app.industry}
-                          </span>
-                        </td>
-                        <td className="py-4 px-4">
-                          <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-semibold">
-                            {app.status}
-                          </span>
-                        </td>
-                        <td className="py-4 px-4 text-gray-700">{app.submitted}</td>
-                        <td className="py-4 px-4">
-                          <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
-                            View Details
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="space-y-4">
+                <div className="grid grid-cols-12 gap-4 pb-2 border-b border-gray-700 text-xs font-semibold text-gray-400 uppercase">
+                  <div className="col-span-5">Name</div>
+                  <div className="col-span-4">Registration Date</div>
+                  <div className="col-span-3 text-right">Actions</div>
+                </div>
+
+                {investors.map((investor, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-12 gap-4 items-center py-3 border-b border-gray-700/50 last:border-0"
+                  >
+                    <div className="col-span-5 flex items-center gap-3">
+                      <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                        {investor.avatar}
+                      </div>
+                      <div>
+                        <div className="text-white font-medium text-sm">{investor.name}</div>
+                        <div className="text-gray-400 text-xs">{investor.joined}</div>
+                      </div>
+                    </div>
+                    <div className="col-span-4 text-gray-300 text-sm">
+                      {investor.registrationDate}
+                    </div>
+                    <div className="col-span-3 flex justify-end">
+                      <button className="p-2 text-gray-400 hover:text-green-400 transition-colors">
+                        <Eye className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </main>
-      </div>
-      <ChatBot />
+        </div>
+      </main>
     </div>
   );
 }
