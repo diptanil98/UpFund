@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { TrendingUp, Mail, Lock, User } from 'lucide-react'; // Add User icon
 import Header from '../components/Header';
 import ChatBot from '../components/ChatBot';
+import Footer from '../components/Footer';
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
@@ -37,7 +38,7 @@ export default function LoginPage({ onNavigate, onLogin }: LoginPageProps) {
               <TrendingUp className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-            <p className="text-gray-600">Sign in to your VentureHub account</p>
+            <p className="text-gray-600">Sign in to your UpFund account</p>
           </div>
 
           <div className="bg-white rounded-2xl shadow-xl p-8">
@@ -147,6 +148,7 @@ export default function LoginPage({ onNavigate, onLogin }: LoginPageProps) {
           </div>
         </div>
       </main>
+      <Footer />
       <ChatBot />
     </div>
   );

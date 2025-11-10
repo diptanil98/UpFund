@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { TrendingUp, User, Briefcase, Lock, ChevronDown } from 'lucide-react';
 import Header from '../components/Header';
 import ChatBot from '../components/ChatBot';
+import Footer from '../components/Footer';
 
 interface SignupPageProps {
   onNavigate: (page: string) => void;
@@ -20,6 +21,9 @@ export default function SignupPage({ onNavigate, onLogin }: SignupPageProps) {
     email: '',
     password: '',
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const roles = [
     { value: 'entrepreneur', label: 'Entrepreneur (Startup Founder)', icon: Briefcase },
@@ -27,14 +31,48 @@ export default function SignupPage({ onNavigate, onLogin }: SignupPageProps) {
     { value: 'admin', label: 'Admin', icon: Lock },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (selectedRole && formData.email && formData.password) {
+    setError(null);
+    setSuccess(null);
+
+    if (!selectedRole) {
+      setError('Please select a role.');
+      return;
+    }
+
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
+      setError('Please fill all fields.');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await fetch('http://localhost:8000/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          role: selectedRole,
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.detail || 'Signup failed');
+      }
+      const data = await res.json();
+      setSuccess('Account created successfully. You can now sign in.');
+      
+      // Call onLogin with the selected role after successful signup
       const fullName = `${formData.firstName} ${formData.lastName}`.trim();
       onLogin(selectedRole as 'investor' | 'entrepreneur' | 'admin', {
         name: fullName || formData.email,
         email: formData.email,
       });
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -48,7 +86,7 @@ export default function SignupPage({ onNavigate, onLogin }: SignupPageProps) {
             <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <TrendingUp className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Join VentureHub</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Join UpFund</h1>
             <p className="text-gray-600">Create your account and start your journey</p>
           </div>
 
@@ -154,18 +192,26 @@ export default function SignupPage({ onNavigate, onLogin }: SignupPageProps) {
                 />
               </div>
 
+              {error && (
+                <div className="text-sm text-red-600">{error}</div>
+              )}
+              {success && (
+                <div className="text-sm text-green-600">{success}</div>
+              )}
+
               <button
                 type="submit"
-                className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-[1.02] shadow-lg"
+                disabled={submitting}
+                className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-[1.02] shadow-lg disabled:opacity-60"
               >
-                Create Account
+                {submitting ? 'Creating Account...' : 'Create Account'}
               </button>
 
               <p className="text-center text-sm text-gray-600">
                 Already have an account?{' '}
                 <button
                   type="button"
-                  onClick={handleSubmit}
+                  onClick={() => onNavigate('login')}
                   className="text-blue-600 font-semibold hover:text-blue-700"
                 >
                   Sign in here
@@ -175,6 +221,7 @@ export default function SignupPage({ onNavigate, onLogin }: SignupPageProps) {
           </div>
         </div>
       </main>
+      <Footer />
       <ChatBot />
     </div>
   );

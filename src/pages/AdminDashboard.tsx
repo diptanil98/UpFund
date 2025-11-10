@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Settings, User, Calendar, Clock, Search, Eye, BarChart3 } from 'lucide-react';
 import { Line } from '../components/Charts';
+import ChatBot from '../components/ChatBot';
+import Footer from '../components/Footer';
 
 interface AdminDashboardProps {
   onNavigate: (page: string) => void;
@@ -367,6 +369,8 @@ export default function AdminDashboard({ onNavigate, onLogout }: AdminDashboardP
           </div>
         </div>
       </main>
+      <Footer />
+      <ChatBot />
     </div>
   );
 }

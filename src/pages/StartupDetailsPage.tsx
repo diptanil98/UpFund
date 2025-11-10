@@ -1,6 +1,7 @@
 import { ArrowLeft, Calendar, DollarSign, Users, TrendingUp, MapPin, Building2 } from 'lucide-react';
 import Header from '../components/Header';
 import ChatBot from '../components/ChatBot';
+import Footer from '../components/Footer';
 
 interface StartupDetailsPageProps {
   onNavigate: (page: string) => void;
@@ -248,7 +249,8 @@ export default function StartupDetailsPage({ onNavigate, isLoggedIn, userRole }:
         </div>
       </main>
 
-      <ChatBot />
+	  <Footer />
+	  <ChatBot />
     </div>
   );
 }
